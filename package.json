@@ -20,7 +20,8 @@
   "dependencies": {
     "ffmpeg-static": "^5.2.0",
     "ffprobe-static": "^3.1.0",
-    "fluent-ffmpeg": "^2.1.2"
+    "fluent-ffmpeg": "^2.1.2",
+    "tmp-promise": "^3.0.3"
   },
   "devDependencies": {
     "jest": "^29.7.0"
