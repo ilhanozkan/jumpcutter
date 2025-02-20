@@ -76,6 +76,10 @@ const videoBuffer = await cutter.processToBuffer({
 - Node.js 14 or higher
 - FFmpeg (included via ffmpeg-static)
 
+## Projects Using JumpCutter
+
+- [JumpCutter App written with Electron](https://github.com/ilhanozkan/jumpcutter-app)
+
 ## MIT License
 
 Copyright (c) 2025 Ilhan Ozkan
