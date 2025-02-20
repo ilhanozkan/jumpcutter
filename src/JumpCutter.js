@@ -33,6 +33,39 @@ class JumpCutter {
     }
   }
 
+  async processToBuffer({ input, mode = 'remove', outputFormat = 'mp4' }) {
+    try {
+      if (!input)
+        throw new Error("Input path is required");
+
+      // Get silence information directly
+      const silenceInfo = await this._detectSilence(input);
+      const duration = await this._getDuration(input);
+
+      // Create temporary file for output
+      const { path: outputFile } = await tmp.file({ postfix: `.${outputFormat}` });
+
+      // Process video based on mode
+      if (mode === 'remove') {
+        await this._removeSilence(input, outputFile, silenceInfo, duration);
+      } else if (mode === 'speed') {
+        await this._speedupSilence(input, outputFile, silenceInfo);
+      } else {
+        throw new Error('Invalid processing mode');
+      }
+
+      // Read the processed file into buffer
+      const buffer = await fs.readFile(outputFile);
+
+      // Clean up temporary file
+      await fs.unlink(outputFile);
+
+      return buffer;
+    } catch (error) {
+      throw new Error(`Error processing video to buffer: ${error.message}`);
+    }
+  }
+
   async _detectSilence(input) {
     return new Promise((resolve, reject) => {
       let silenceData = "";
@@ -286,36 +319,6 @@ class JumpCutter {
         }
       });
     });
-  }
-
-  async processToBuffer({ input, mode = 'remove', outputFormat = 'mp4' }) {
-    try {
-      // Get silence information directly
-      const silenceInfo = await this._detectSilence(input);
-      const duration = await this._getDuration(input);
-
-      // Create temporary file for output
-      const { path: outputFile } = await tmp.file({ postfix: `.${outputFormat}` });
-
-      // Process video based on mode
-      if (mode === 'remove') {
-        await this._removeSilence(input, outputFile, silenceInfo, duration);
-      } else if (mode === 'speed') {
-        await this._speedupSilence(input, outputFile, silenceInfo);
-      } else {
-        throw new Error('Invalid processing mode');
-      }
-
-      // Read the processed file into buffer
-      const buffer = await fs.readFile(outputFile);
-
-      // Clean up temporary file
-      await fs.unlink(outputFile);
-
-      return buffer;
-    } catch (error) {
-      throw new Error(`Error processing video to buffer: ${error.message}`);
-    }
   }
 }
 
