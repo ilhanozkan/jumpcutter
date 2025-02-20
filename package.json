@@ -1,5 +1,5 @@
 {
-  "name": "jumpcutter",
+  "name": "@ilhanozkan/jumpcutter",
   "version": "1.0.0",
   "description": "A Node.js package for processing videos and audio files by handling silent sections",
   "main": "src/JumpCutter.js",
@@ -15,8 +15,8 @@
     "ffmpeg",
     "jumpcut"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "Ilhan Ozkan",
+  "license": "MIT",
   "dependencies": {
     "ffmpeg-static": "^5.2.0",
     "ffprobe-static": "^3.1.0",
@@ -28,5 +28,16 @@
   },
   "engines": {
     "node": ">=14.0.0"
-  }
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ilhanozkan/jumpcutter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ilhanozkan/jumpcutter/issues"
+  },
+  "homepage": "https://github.com/ilhanozkan/jumpcutter#readme"
 }
