@@ -43,23 +43,16 @@ class JumpCutter {
         .audioFilters(
           `silencedetect=n=${this.silenceThreshold}dB:d=${this.minSilenceDuration}`
         )
-        .on("start", (command) => {
-          console.log("Started silence detection with command:", command);
-        })
         .on("stderr", (line) => {
           if (line.includes("silence_start") || line.includes("silence_end")) {
             silenceData += line + "\n";
-            console.log("Silence data:", line);
           }
         })
         .on("error", (err, stdout, stderr) => {
-          console.error("FFmpeg Error:", err);
-          console.error("FFmpeg stderr:", stderr);
           reject(err);
         })
         .on("end", () => {
           const silences = this._parseSilenceInfo(silenceData);
-          console.log("Detected silences:", silences);
           resolve(silences);
         })
         .save("pipe:1");
@@ -140,13 +133,11 @@ class JumpCutter {
       `${aConcat}concat=n=${segments.length}:v=0:a=1[outa]`,
     ].join(";");
 
-    console.log("Generated remove filter:", filter);
     return filter;
   }
 
   async _removeSilence(input, output, silenceInfo, duration) {
     const filter = this._createRemoveFilter(silenceInfo, duration);
-    console.log("Generated filter:", filter);
 
     return new Promise((resolve, reject) => {
       const command = ffmpeg(input);
@@ -164,19 +155,10 @@ class JumpCutter {
               "-avoid_negative_ts",
               "make_zero",
             ])
-            .on("start", (cmd) => {
-              console.log("Started FFmpeg with command:", cmd);
-            })
-            .on("stderr", (stderrLine) => {
-              console.log("FFmpeg:", stderrLine);
-            })
             .on("error", (err, stdout, stderr) => {
-              console.error("FFmpeg Error:", err);
-              console.error("FFmpeg stderr:", stderr);
               reject(err);
             })
             .on("end", () => {
-              console.log("FFmpeg processing finished");
               resolve();
             })
             .save(output);
@@ -193,7 +175,6 @@ class JumpCutter {
   async _speedupSilence(input, output, silenceInfo) {
     const duration = await this._getDuration(input);
     const filter = this._createSpeedFilter(silenceInfo, duration);
-    console.log("Generated filter:", filter);
 
     return new Promise((resolve, reject) => {
       const command = ffmpeg(input);
@@ -211,19 +192,10 @@ class JumpCutter {
               "-avoid_negative_ts",
               "make_zero",
             ])
-            .on("start", (cmd) => {
-              console.log("Started FFmpeg with command:", cmd);
-            })
-            .on("stderr", (stderrLine) => {
-              console.log("FFmpeg:", stderrLine);
-            })
             .on("error", (err, stdout, stderr) => {
-              console.error("FFmpeg Error:", err);
-              console.error("FFmpeg stderr:", stderr);
               reject(err);
             })
             .on("end", () => {
-              console.log("FFmpeg processing finished");
               resolve();
             })
             .save(output);
@@ -301,7 +273,6 @@ class JumpCutter {
       `${aConcat}concat=n=${segments.length}:v=0:a=1[outa]`,
     ].join(";");
 
-    console.log("Generated filter:", filter);
     return filter;
   }
 
